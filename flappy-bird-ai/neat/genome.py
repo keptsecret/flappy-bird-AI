@@ -8,7 +8,7 @@ class Genome():
 
     next_conn_num = 420
 
-    def __init__(self, inputs, outputs, crossover):
+    def __init__(self, inputs, outputs, crossover=False):
         self.genes : list[ConnectionGene] = []
         self.nodes : list[Node] = []
         self.inputs = inputs
