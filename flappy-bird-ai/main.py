@@ -9,7 +9,7 @@ bird_yellow = (250, 239, 32)
 pipe_green = (105, 214, 21)
 sky_blue = (52, 213, 235)
 
-def game_loop( screen, size, player, pipe_pairs):
+def game_loop(screen, size, player, pipe_pairs):
     prev_time = time()
 
     while True:
