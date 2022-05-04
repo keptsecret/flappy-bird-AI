@@ -1,7 +1,10 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
 import random
 
-from node import Node
-from genome import Genome
+if TYPE_CHECKING:
+    from .node import Node
+    from .genome import Genome
 
 class ConnectionGene():
     """A connection between two nodes."""

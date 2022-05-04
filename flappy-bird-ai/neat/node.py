@@ -1,6 +1,9 @@
+from __future__ import annotations
+from typing import List, TYPE_CHECKING
 import math
 
-from connection import ConnectionGene
+if TYPE_CHECKING:
+    from .connection import ConnectionGene
 
 class Node():
     """A node in the network."""
@@ -8,7 +11,7 @@ class Node():
         self.num = num
         self.input_sum = 0
         self.output = 0
-        self.out_connections : list[ConnectionGene] = []
+        self.out_connections : List[ConnectionGene] = []
         self.layer = 0
     
     def forward(self):
@@ -22,7 +25,7 @@ class Node():
             if conn.enabled:
                 conn.to_node.input_sum += conn.weight * self.output
     
-    def is_connected(self, n):
+    def is_connected(self, n : Node):
         if self.layer == n.layer:
             return False
 

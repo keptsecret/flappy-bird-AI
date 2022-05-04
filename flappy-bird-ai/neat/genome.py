@@ -1,7 +1,9 @@
+from __future__ import annotations
+from typing import List
 import random
 
-from node import Node
-from connection import ConnectionGene, ConnectionHistory
+from .node import Node
+from .connection import ConnectionGene, ConnectionHistory
 
 class Genome():
     """Contains the network representation for a specimen"""
@@ -9,13 +11,13 @@ class Genome():
     next_conn_num = 420
 
     def __init__(self, inputs, outputs, crossover=False):
-        self.genes : list[ConnectionGene] = []
-        self.nodes : list[Node] = []
+        self.genes : List[ConnectionGene] = []
+        self.nodes : List[Node] = []
         self.inputs = inputs
         self.outputs = outputs
         self.layers = 2
         self.next_node = 0
-        self.network : list[Node] = []
+        self.network : List[Node] = []
 
         if crossover:
             return
@@ -41,7 +43,7 @@ class Genome():
                 return n
         return None
 
-    def fully_connect(self, innovation_hist : list[ConnectionHistory]):
+    def fully_connect(self, innovation_hist : List[ConnectionHistory]):
         """Connects all the nodes in the network"""
         for i in range(self.inputs):
             for j in range(self.outputs):
@@ -111,7 +113,7 @@ class Genome():
 
         return outputs
 
-    def add_node(self, innovation_hist : list[ConnectionHistory]):
+    def add_node(self, innovation_hist : List[ConnectionHistory]):
         """
         Adds a random node to the network to mutate.\n
         A random connection is picked, disabled and a new node is added with 2 new connections.
@@ -152,7 +154,7 @@ class Genome():
         self.layers += 1
         self.connect_nodes()
 
-    def add_connection(self, innovation_hist : list[ConnectionHistory]):
+    def add_connection(self, innovation_hist : List[ConnectionHistory]):
         """
         Picks two random nodes that aren't connected to add a connection between
         """
@@ -181,7 +183,7 @@ class Genome():
         self.genes.append(ConnectionGene(self.nodes[rand_node_1], self.nodes[rand_node_2], random.uniform(1, -1), conn_inno_num))
         self.connect_nodes()
 
-    def get_innovation_number(self, innovation_hist : list[ConnectionHistory], from_n : Node, to_n : Node):
+    def get_innovation_number(self, innovation_hist : List[ConnectionHistory], from_n : Node, to_n : Node):
         """
         Returns innovation number for mutation.\n
         If mutation is new, then a new unique innovation number is assigned.
@@ -206,7 +208,7 @@ class Genome():
         
         return conn_inno_num
 
-    def mutate(self, innovation_hist : list[ConnectionHistory]):
+    def mutate(self, innovation_hist : List[ConnectionHistory]):
         """
         Mutates the genome.\n
         80% chance to mutate connection weights\n
@@ -229,7 +231,7 @@ class Genome():
         if rand < 0.01:
             self.add_node(innovation_hist)
 
-    def crossover(self, other_parent):
+    def crossover(self, other_parent : Genome):
         """
         Called if this genome is better than other parent. Creates a child genome with mix of genes from another parent.
         """
@@ -240,7 +242,7 @@ class Genome():
         child.next_node = self.next_node
         child.bias_node = self.bias_node
 
-        child_genes : list[ConnectionGene] = []
+        child_genes : List[ConnectionGene] = []
         is_enabled = []
 
         for conn in self.genes:
@@ -272,7 +274,7 @@ class Genome():
         child.connect_nodes()
         return child
 
-    def find_matching_gene(self, parent, inno):
+    def find_matching_gene(self, parent : Genome, inno):
         for i, conn in enumerate(parent.genes):
             if conn.innovation_num == inno:
                 return i
