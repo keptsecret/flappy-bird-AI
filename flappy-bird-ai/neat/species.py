@@ -54,7 +54,7 @@ class Species():
         """
         Returns average weight difference between matching genes in genomes
         """
-        if len(brain1.genes) == 0 or len(brain2.genes):
+        if len(brain1.genes) == 0 or len(brain2.genes) == 0:
             return 0
 
         matching = 0.0

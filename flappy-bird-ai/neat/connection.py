@@ -10,6 +10,8 @@ class ConnectionGene():
     """A connection between two nodes."""
 
     def __init__(self, from_n : Node, to_n : Node, w : float, inno : int) -> None:
+        if from_n is None or to_n is None:
+            breakpoint()
         self.from_node = from_n
         self.to_node = to_n
         self.weight = w
@@ -42,10 +44,9 @@ class ConnectionHistory():
         """Returns whether param genome matches this genome, including all connections"""
         
         if len(genome.genes) == len(self.innovation_nums):
-            if from_n.num == self.from_node and to_n.num == self.to_node:
+            if from_n.num == self.from_node.num and to_n.num == self.to_node.num:
                 for conn in genome.genes:
                     if conn.innovation_num not in self.innovation_nums:
                         return False
-
-            return True
+                return True
         return False
