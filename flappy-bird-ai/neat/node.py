@@ -7,14 +7,14 @@ if TYPE_CHECKING:
 
 class Node():
     """A node in the network."""
-    def __init__(self, num):
+    def __init__(self, num) -> None:
         self.num = num
         self.input_sum = 0
         self.output = 0
         self.out_connections : List[ConnectionGene] = []
         self.layer = 0
     
-    def forward(self):
+    def forward(self) -> None:
         def sigmoid(x):
             return 1. / (1 + math.exp(-x))
 
@@ -25,7 +25,7 @@ class Node():
             if conn.enabled:
                 conn.to_node.input_sum += conn.weight * self.output
     
-    def is_connected(self, n : Node):
+    def is_connected(self, n : Node) -> bool:
         if self.layer == n.layer:
             return False
 
@@ -40,7 +40,7 @@ class Node():
 
         return False
 
-    def clone(self):
+    def clone(self) -> Node:
         clone = Node(self.num)
         clone.layer = self.layer
         return clone

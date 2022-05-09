@@ -9,14 +9,14 @@ if TYPE_CHECKING:
 class ConnectionGene():
     """A connection between two nodes."""
 
-    def __init__(self, from_n : Node, to_n : Node, w : float, inno : int):
+    def __init__(self, from_n : Node, to_n : Node, w : float, inno : int) -> None:
         self.from_node = from_n
         self.to_node = to_n
         self.weight = w
         self.enabled = True
         self.innovation_num = inno
 
-    def mutate_weight(self):
+    def mutate_weight(self) -> None:
         def clamp(num, min_value, max_value):
             return max(min(num, max_value), min_value)
 
@@ -26,19 +26,19 @@ class ConnectionGene():
         else:
             self.weight += clamp(random.gauss(0, 1) / 50, -1, 1)
 
-    def clone(self, from_n : Node, to_n : Node):
+    def clone(self, from_n : Node, to_n : Node) -> ConnectionGene:
         clone = ConnectionGene(from_n, to_n, self.weight, self.innovation_num)
         clone.enabled = self.enabled
         return clone
 
 class ConnectionHistory():
-    def __init__(self, from_n : Node, to_n : Node, inno : int, innos : list[int]):
+    def __init__(self, from_n : Node, to_n : Node, inno : int, innos : list[int]) -> None:
         self.from_node = from_n
         self.to_node = to_n
         self.innovation_num = inno
         self.innovation_nums = innos.copy()
 
-    def matches(self, genome : Genome, from_n : Node, to_n : Node):
+    def matches(self, genome : Genome, from_n : Node, to_n : Node) -> bool:
         """Returns whether param genome matches this genome, including all connections"""
         
         if len(genome.genes) == len(self.innovation_nums):

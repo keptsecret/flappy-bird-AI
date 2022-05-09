@@ -10,7 +10,7 @@ class Genome():
 
     next_conn_num = 420
 
-    def __init__(self, inputs, outputs, crossover=False):
+    def __init__(self, inputs, outputs, crossover=False) -> None:
         self.genes : List[ConnectionGene] = []
         self.nodes : List[Node] = []
         self.inputs = inputs
@@ -37,13 +37,13 @@ class Genome():
         self.next_node += 1
         self.nodes[self.bias_node].layer = 0
 
-    def get_node(self, n_num):
+    def get_node(self, n_num) -> Node:
         for n in self.nodes:
             if n.num == n_num:
                 return n
         return None
 
-    def fully_connect(self, innovation_hist : List[ConnectionHistory]):
+    def fully_connect(self, innovation_hist : List[ConnectionHistory]) -> None:
         """Connects all the nodes in the network"""
         for i in range(self.inputs):
             for j in range(self.outputs):
@@ -55,7 +55,7 @@ class Genome():
 
         self.connect_nodes()
 
-    def is_fully_connected(self):
+    def is_fully_connected(self) -> bool:
         nodes_per_layer = []
         for l in range(self.layers):
             nodes_per_layer[l] = 0
@@ -77,7 +77,7 @@ class Genome():
 
         return False
 
-    def connect_nodes(self):
+    def connect_nodes(self) -> None:
         """Connects nodes to its targets to pass on input during feedforward"""
         for n in self.nodes:
             n.out_connections = []
@@ -85,7 +85,7 @@ class Genome():
         for conn in self.genes:
             conn.from_node.out_connections.append(conn)
 
-    def generate_network(self):
+    def generate_network(self) -> None:
         """Generates a list of nodes in order that they have to be run in, stored in self.network"""
         self.connect_nodes()
         self.network = []
@@ -95,7 +95,7 @@ class Genome():
                 if n.layer == l:
                     self.network.append(n)
 
-    def feedforward(self, input_vals):
+    def feedforward(self, input_vals) -> List[float]:
         """Sends input through network and returns the output of network"""
         for i in range(self.inputs):
             self.nodes[i].output = input_vals[i]
@@ -113,7 +113,7 @@ class Genome():
 
         return outputs
 
-    def add_node(self, innovation_hist : List[ConnectionHistory]):
+    def add_node(self, innovation_hist : List[ConnectionHistory]) -> None:
         """
         Adds a random node to the network to mutate.\n
         A random connection is picked, disabled and a new node is added with 2 new connections.
@@ -154,7 +154,7 @@ class Genome():
         self.layers += 1
         self.connect_nodes()
 
-    def add_connection(self, innovation_hist : List[ConnectionHistory]):
+    def add_connection(self, innovation_hist : List[ConnectionHistory]) -> None:
         """
         Picks two random nodes that aren't connected to add a connection between
         """
@@ -183,7 +183,7 @@ class Genome():
         self.genes.append(ConnectionGene(self.nodes[rand_node_1], self.nodes[rand_node_2], random.uniform(1, -1), conn_inno_num))
         self.connect_nodes()
 
-    def get_innovation_number(self, innovation_hist : List[ConnectionHistory], from_n : Node, to_n : Node):
+    def get_innovation_number(self, innovation_hist : List[ConnectionHistory], from_n : Node, to_n : Node) -> int:
         """
         Returns innovation number for mutation.\n
         If mutation is new, then a new unique innovation number is assigned.
@@ -208,7 +208,7 @@ class Genome():
         
         return conn_inno_num
 
-    def mutate(self, innovation_hist : List[ConnectionHistory]):
+    def mutate(self, innovation_hist : List[ConnectionHistory]) -> None:
         """
         Mutates the genome.\n
         80% chance to mutate connection weights\n
@@ -231,7 +231,7 @@ class Genome():
         if rand < 0.01:
             self.add_node(innovation_hist)
 
-    def crossover(self, other_parent : Genome):
+    def crossover(self, other_parent : Genome) -> Genome:
         """
         Called if this genome is better than other parent. Creates a child genome with mix of genes from another parent.
         """
@@ -274,13 +274,13 @@ class Genome():
         child.connect_nodes()
         return child
 
-    def find_matching_gene(self, parent : Genome, inno):
+    def find_matching_gene(self, parent : Genome, inno) -> int:
         for i, conn in enumerate(parent.genes):
             if conn.innovation_num == inno:
                 return i
         return -1
 
-    def clone(self):
+    def clone(self) -> Genome:
         clone = Genome(self.inputs, self.outputs, True)
 
         for n in self.nodes:
@@ -295,5 +295,3 @@ class Genome():
         clone.connect_nodes()
 
         return clone
-
-        
