@@ -79,14 +79,14 @@ class Player():
 
     def look(self):
         def normalize(value, old_range, new_range) -> float:
-            value = (value - old_range[0]) / (old_range[0] + old_range[1])
-            value = value / (new_range[0] + new_range[1]) + new_range[0]
+            value = (value - old_range[0]) / (old_range[1] - old_range[0])
+            value = value / (new_range[1] - new_range[0]) + new_range[0]
             return value
 
         self.vision = [0, 0, 0, 0]
         self.vision[0] = normalize(self.velocity, (-0.75, 0.75), (-1, 1))
 
-        closest_pipe = self.pipe_pairs[1 - self.last_pipe]
+        closest_pipe = Player.pipe_pairs[1 - self.last_pipe]
 
         bottom_pipe = closest_pipe.bottom_pipe
         # distance to closest pipe
@@ -97,10 +97,10 @@ class Player():
         top_pipe = closest_pipe.top_pipe
         self.vision[3] = normalize(self.position[1] - top_pipe.position[1] + top_pipe.height, (0, 720), (0, 1))
 
-    def think(self):
+    def think(self, delta_time):
         self.decision = self.brain.feedforward(self.vision)
         if self.decision[0] > 0.6:
-            self.flap()
+            self.flap(delta_time)
 
     def calculate_fitness(self) -> None:
         self.fitness = 1 + pow(self.score, 2) + self.lifespan / 20.0

@@ -57,8 +57,8 @@ class Genome():
 
     def is_fully_connected(self) -> bool:
         nodes_per_layer = []
-        for l in range(self.layers):
-            nodes_per_layer[l] = 0
+        for _ in range(self.layers):
+            nodes_per_layer.append(0)
 
         for n in self.nodes:
             nodes_per_layer[n.layer] += 1
@@ -139,7 +139,7 @@ class Genome():
         # connect new node to end of old connection
         conn_inno_num = self.get_innovation_number(innovation_hist, self.get_node(new_node), self.genes[rand_conn].to_node)
         self.genes.append(ConnectionGene(self.get_node(new_node), self.genes[rand_conn].to_node, self.genes[rand_conn].weight, conn_inno_num))
-        self.get_node(new_node).layer = self.genes[rand_conn].from_node + 1
+        self.get_node(new_node).layer = self.genes[rand_conn].from_node.layer + 1
 
         # connect bias to new node
         conn_inno_num = self.get_innovation_number(innovation_hist, self.nodes[self.bias_node], self.get_node(new_node))
@@ -201,7 +201,7 @@ class Genome():
         if is_new:
             inno_nums = []
             for conn in self.genes:
-                inno_nums.push(conn.innovation_num)
+                inno_nums.append(conn.innovation_num)
             
             innovation_hist.append(ConnectionHistory(from_n, to_n, conn_inno_num, inno_nums))
             Genome.next_conn_num += 1

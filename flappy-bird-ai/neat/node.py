@@ -24,7 +24,7 @@ class Node():
         for conn in self.out_connections:
             if conn.enabled:
                 conn.to_node.input_sum += conn.weight * self.output
-    
+
     def is_connected(self, n : Node) -> bool:
         if self.layer == n.layer:
             return False

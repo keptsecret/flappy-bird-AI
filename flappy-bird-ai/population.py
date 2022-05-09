@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import List, TYPE_CHECKING
+import math
 
 if TYPE_CHECKING:
     from neat.connection import ConnectionHistory
@@ -39,7 +40,7 @@ class Population():
             if p.is_alive:
                 # TODO: might add multiple steps in one update
                 p.look()
-                p.think()
+                p.think(delta_time)
                 p.update(delta_time)
 
             # TODO: add selective draw to show only some of the players
@@ -89,7 +90,7 @@ class Population():
         for s in self.species:
             children.append(s.champ.clone())
 
-            num_children = s.avg_fitness // avg_sum * len(self.players)
+            num_children = math.floor(s.avg_fitness / avg_sum * len(self.players))
 
             for _ in range(num_children - 1):
                 children.append(s.make_child(self.innovation_history))
