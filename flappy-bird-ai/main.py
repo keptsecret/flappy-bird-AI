@@ -87,6 +87,7 @@ def game_loop_ai(screen, size, font, population, pipe_pairs):
             population.update_alive(surf, delta_time)
         else:
             population.natural_selection()
+            reset(pipe_pairs)
 
         text_surf = font.render(f'{population.global_best_score}', True, (255,255,255))
 
@@ -94,6 +95,12 @@ def game_loop_ai(screen, size, font, population, pipe_pairs):
         screen.blit(text_surf, (size[0]/2 - font_size/2, 0))
         pygame.display.flip()
         prev_time = curr_time
+
+
+def reset(pipe_pairs):
+    for pipe in pipe_pairs:
+        pipe.reset()
+    pipe_pairs[0].start()
 
 
 def main():
@@ -105,7 +112,7 @@ def main():
     screen = pygame.display.set_mode(window_size)
     pipe_pairs = [PipePair(500), PipePair(500)]
     pipe_pairs[0].start()
-    # player = Player(pipes=pipe_pairs)
+    player = Player(pipes=pipe_pairs)
     population = Population(100)
 
     # game_loop(screen, window_size, font, player, pipe_pairs)

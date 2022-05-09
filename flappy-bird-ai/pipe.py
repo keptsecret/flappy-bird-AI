@@ -44,6 +44,12 @@ class PipePair():
             self.top_pipe.reset((self.top_pipe.init_x, bottom_pos_y - self.height - self.gap_size))
             self.bottom_pipe.reset((self.bottom_pipe.init_x, bottom_pos_y))
 
+    def reset(self):
+        bottom_pos_y = random.randint(200, 520)
+        self.top_pipe.reset((self.top_pipe.init_x, bottom_pos_y - self.height - self.gap_size))
+        self.bottom_pipe.reset((self.bottom_pipe.init_x, bottom_pos_y))
+        self.active = False
+
     def draw(self, surface) -> None:
         self.top_pipe.draw(surface)
         self.bottom_pipe.draw(surface)
