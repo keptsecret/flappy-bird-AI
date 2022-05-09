@@ -16,7 +16,7 @@ class Player():
         self.velocity = 0
 
         self.last_pipe = 1
-        self.last_input_time = None
+        self.last_input_time = 0
         self.max_speed = 0.8
         
         if Player.pipe_pairs is None:
@@ -37,10 +37,10 @@ class Player():
         self.genome_outputs = 1
         self.brain = Genome(self.genome_inputs, self.genome_outputs)
 
-    def flap(self, delta_time) -> None:
-        if self.last_input_time == None or delta_time - self.last_input_time >= 0.15:
+    def flap(self) -> None:
+        if self.is_alive and self.last_input_time > 0.2:
             self.velocity = -self.max_speed
-            self.last_input_time = delta_time
+            self.last_input_time = 0
 
     def update(self, delta_time) -> None:
         def clamp(num, min_value, max_value):
@@ -71,6 +71,8 @@ class Player():
                 self.score += 1
                 self.last_pipe = i // 2
 
+        self.last_input_time += delta_time
+
     def draw(self, surface) -> None:
         pygame.draw.circle(surface, self.color, self.position, self.size)
 
@@ -84,23 +86,23 @@ class Player():
             return value
 
         self.vision = [0, 0, 0, 0]
-        self.vision[0] = normalize(self.velocity, (-0.75, 0.75), (-1, 1))
+        self.vision[0] = normalize(self.velocity, (-self.max_speed, self.max_speed), (-1, 1))
 
         closest_pipe = Player.pipe_pairs[1 - self.last_pipe]
 
         bottom_pipe = closest_pipe.bottom_pipe
         # distance to closest pipe
-        self.vision[1] = normalize(bottom_pipe.position[0] - self.position[0], (0, 720), (0, 1))
+        self.vision[1] = normalize(bottom_pipe.position[0] - self.position[0], (0, 720), (1, 0))
         # distance to top of bottom pipe
         self.vision[2] = normalize(bottom_pipe.position[1] - self.position[1], (0, 720), (0, 1))
         # distance to bottom of top pipe
         top_pipe = closest_pipe.top_pipe
         self.vision[3] = normalize(self.position[1] - top_pipe.position[1] + top_pipe.height, (0, 720), (0, 1))
 
-    def think(self, delta_time):
+    def think(self):
         self.decision = self.brain.feedforward(self.vision)
         if self.decision[0] > 0.6:
-            self.flap(delta_time)
+            self.flap()
 
     def calculate_fitness(self) -> None:
         self.fitness = 1 + pow(self.score, 2) + self.lifespan / 20.0

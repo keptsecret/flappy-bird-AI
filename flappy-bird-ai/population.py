@@ -36,15 +36,15 @@ class Population():
         return self.players[0]
 
     def update_alive(self, surface, delta_time) -> None:
-        for p in self.players:
+        for i, p in enumerate(self.players):
             if p.is_alive:
                 # TODO: might add multiple steps in one update
                 p.look()
-                p.think(delta_time)
+                p.think()
                 p.update(delta_time)
 
-            # TODO: add selective draw to show only some of the players
-            p.draw(surface)
+                # TODO: add selective draw to show only some of the players
+                p.draw(surface)
 
             if p.score > self.global_best_score:
                 self.global_best_score = p.score

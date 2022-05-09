@@ -218,17 +218,14 @@ class Genome():
         if len(self.genes) == 0:
             self.add_connection(innovation_hist)
         
-        rand = random.random()
-        if rand < 0.8:
+        if random.random() < 0.8:
             for conn in self.genes:
                 conn.mutate_weight()
 
-        rand = random.random()
-        if rand < 0.05:
+        if random.random() < 0.05:
             self.add_connection(innovation_hist)
         
-        rand = random.random()
-        if rand < 0.01:
+        if random.random() < 0.01:
             self.add_node(innovation_hist)
 
     def crossover(self, other_parent : Genome) -> Genome:
