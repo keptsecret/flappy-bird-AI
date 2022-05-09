@@ -2,10 +2,10 @@ from __future__ import annotations
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..player import Player
-    from .connection import ConnectionHistory
+    from neat.connection import ConnectionHistory
 
-from .species import Species
+from player import Player
+from neat.species import Species
 
 class Population():
     def __init__(self, pop_size : int) -> None:
@@ -34,16 +34,16 @@ class Population():
                 return p
         return self.players[0]
 
-    def update_alive(self) -> None:
+    def update_alive(self, surface, delta_time) -> None:
         for p in self.players:
             if p.is_alive:
                 # TODO: might add multiple steps in one update
                 p.look()
                 p.think()
-                p.update()
+                p.update(delta_time)
 
             # TODO: add selective draw to show only some of the players
-            p.draw()
+            p.draw(surface)
 
             if p.score > self.global_best_score:
                 self.global_best_score = p.score
