@@ -2,7 +2,6 @@ import argparse
 import sys
 from time import time
 import pygame
-import random
 
 from player import Player
 from pipe import PipePair
@@ -60,15 +59,12 @@ def game_loop(screen, size, font, player, pipe_pairs):
 
 
 def game_loop_ai(screen, size, font, population, pipe_pairs):
-    prev_time = time()
 
     while True:
         for event in pygame.event.get():
-            curr_time = time()
             if event.type == pygame.QUIT:
                 pygame.quit()
         
-        curr_time = time()
         surf = pygame.Surface(size)
         surf.fill(sky_blue)
 
@@ -83,8 +79,9 @@ def game_loop_ai(screen, size, font, population, pipe_pairs):
             if pair.active:
                 pair.draw(surf)
 
+        players_surf = pygame.Surface(size)
         if not population.done():
-            population.update_alive(surf, delta_time)
+            population.update_alive(players_surf, delta_time)
         else:
             population.natural_selection()
             reset(pipe_pairs)
@@ -93,10 +90,10 @@ def game_loop_ai(screen, size, font, population, pipe_pairs):
         gen_surf = font.render(f'Gen: {population.gen}', True, white)
 
         screen.blit(surf, (0,0))
+        screen.blit(players_surf, (0,0))
         screen.blit(score_surf, (size[0]/2 - font_size/2, 5))
         screen.blit(gen_surf, (5, 5))
         pygame.display.flip()
-        prev_time = curr_time
 
 
 def reset(pipe_pairs):

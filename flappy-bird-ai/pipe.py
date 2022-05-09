@@ -1,23 +1,25 @@
 from __future__ import annotations
 from typing import List
+import os
 import pygame
 import random
 
 class Pipe():
-    def __init__(self, pos_x, pos_y, width=100, height=800, color=(105, 214, 21)) -> None:
+    def __init__(self, pos_x, pos_y, width=104, height=800, img=None) -> None:
         self.init_x = pos_x
         self.init_y = pos_y
         self.position = (pos_x, pos_y)
         self.width = width
         self.height = height
-        self.color = color
+        self.img = img
         self.speed = 150
 
     def update(self, delta_time) -> None:
         self.position = (self.position[0] - self.speed * delta_time, self.position[1])
 
     def draw(self, surface) -> None:
-        pygame.draw.rect(surface, self.color, (self.position[0], self.position[1], self.width, self.height))
+        # pygame.draw.rect(surface, self.color, (self.position[0], self.position[1], self.width, self.height))
+        surface.blit(self.img, self.position)
 
     def reset(self, pos) -> None:
         self.position = pos
@@ -28,8 +30,10 @@ class PipePair():
 
         self.gap_size = 200
         self.height = height
-        self.top_pipe = Pipe(pos_x, bottom_pos_y - height - self.gap_size, width, height, color)
-        self.bottom_pipe = Pipe(pos_x, bottom_pos_y, width, height, color)
+        top_pipe_img = pygame.image.load(os.path.join("images", "pipe_top.png"))
+        self.top_pipe = Pipe(pos_x, bottom_pos_y - height - self.gap_size, width, height, top_pipe_img)
+        bottom_pipe_img = pygame.image.load(os.path.join("images", "pipe_bottom.png"))
+        self.bottom_pipe = Pipe(pos_x, bottom_pos_y, width, height, bottom_pipe_img)
         self.active = False
         
     def start(self) -> None:

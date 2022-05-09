@@ -1,9 +1,13 @@
 from __future__ import annotations
 from typing import List
 import os
+import math
+from xml.etree.ElementTree import PI
 import pygame
 
 from neat.genome import Genome
+
+PI = 3.1415
 
 class Player():
 
@@ -24,7 +28,7 @@ class Player():
             Player.pipe_pairs = pipes
 
         self.img = pygame.image.load(os.path.join("images", "duck.png"))
-        self.img = pygame.transform.scale(self.img, (radius*2, radius*2))
+        self.img_surf = pygame.transform.scale(self.img, (radius*2, radius*2))
 
         # NEAT stuff
         self.fitness = 0
@@ -79,7 +83,8 @@ class Player():
 
     def draw(self, surface) -> None:
         # pygame.draw.circle(surface, self.color, self.position, self.radius)
-        surface.blit(self.img, (self.position[0]-self.radius, self.position[1]-self.radius))
+        # self.img_surf = pygame.transform.rotate(self.img, math.atan2(-self.velocity, 0.16) / PI * 180)
+        surface.blit(self.img_surf, (self.position[0]-self.radius, self.position[1]-self.radius))
 
     # ------------------------------------------------------------------------
     # functions for NEAT
