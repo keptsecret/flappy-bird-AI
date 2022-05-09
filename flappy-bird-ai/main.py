@@ -2,7 +2,7 @@ import sys
 from time import time
 import pygame
 
-from player import Player, Status
+from player import Player
 from pipe import PipePair
 
 bird_yellow = (250, 239, 32)
@@ -13,7 +13,7 @@ def game_loop(screen, size, player, pipe_pairs):
     prev_time = time()
 
     while True:
-        if player.status == Status.DEAD:
+        if not player.is_alive:
             print("Player dead!")
             break
 
@@ -52,14 +52,14 @@ def game_loop(screen, size, player, pipe_pairs):
 def main():
     pygame.init()
 
-    size = (500, 720)
+    window_size = (500, 720)
 
-    screen = pygame.display.set_mode(size)
-    player = Player((200, size[1] / 3), 30.0, bird_yellow)
+    screen = pygame.display.set_mode(window_size)
+    player = Player()
     pipe_pairs = [PipePair(500), PipePair(500)]
     pipe_pairs[0].start()
 
-    game_loop(screen, size, player, pipe_pairs)
+    game_loop(screen, window_size, player, pipe_pairs)
 
     pygame.quit()
     sys.exit()

@@ -4,7 +4,7 @@ import pygame
 from neat.genome import Genome
 
 class Player():
-    def __init__(self, pos, size, color) -> None:
+    def __init__(self, pos=(200, 720 / 3), size=30.0, color=(250, 239, 32)) -> None:
         self.position = pos
         self.size = size
         self.color = color
