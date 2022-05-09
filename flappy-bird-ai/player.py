@@ -1,5 +1,6 @@
 from __future__ import annotations
 from typing import List
+import os
 import pygame
 
 from neat.genome import Genome
@@ -9,9 +10,9 @@ class Player():
     pipe_pairs = None
     gravity = 3
 
-    def __init__(self, pos=(500 / 5 * 2, 720 / 3), size=30.0, color=(250, 239, 32), pipes=None) -> None:
+    def __init__(self, pos=(500 / 5 * 2, 720 / 3), radius=30.0, color=(250, 239, 32), pipes=None) -> None:
         self.position = pos
-        self.size = size
+        self.radius = radius
         self.color = color
         self.velocity = 0
 
@@ -21,6 +22,9 @@ class Player():
         
         if Player.pipe_pairs is None:
             Player.pipe_pairs = pipes
+
+        self.img = pygame.image.load(os.path.join("images", "duck.png"))
+        self.img = pygame.transform.scale(self.img, (radius*2, radius*2))
 
         # NEAT stuff
         self.fitness = 0
@@ -38,7 +42,7 @@ class Player():
         self.brain = Genome(self.genome_inputs, self.genome_outputs)
 
     def flap(self) -> None:
-        if self.is_alive and self.last_input_time > 0.2:
+        if self.is_alive and self.last_input_time > 0.15:
             self.velocity = -self.max_speed
             self.last_input_time = 0
 
@@ -47,11 +51,11 @@ class Player():
             return max(min(num, max_value), min_value)
 
         self.velocity = clamp(self.velocity + Player.gravity * delta_time, -self.max_speed, self.max_speed)
-        pos_y = clamp(self.position[1] + self.velocity, 0+self.size, 720-self.size)
+        pos_y = clamp(self.position[1] + self.velocity, 0+self.radius, 720-self.radius)
         self.position = (self.position[0], pos_y)
 
         # handle collisions with ground
-        if pos_y >= 720-self.size:
+        if pos_y >= 720-self.radius:
             self.is_alive = False
 
         # handle collisions with pipe
@@ -59,14 +63,14 @@ class Player():
         for pp in self.pipe_pairs:
             pipe_list += pp.get_pipes()
         for i, pipe in enumerate(pipe_list):
-            collide_x = self.position[0] + self.size > pipe.position[0] and self.position[0] - self.size < pipe.position[0] + pipe.width
-            collide_y = self.position[1] + self.size > pipe.position[1] and self.position[1] - self.size < pipe.position[1] + pipe.height
+            collide_x = self.position[0] + self.radius > pipe.position[0] and self.position[0] - self.radius < pipe.position[0] + pipe.width
+            collide_y = self.position[1] + self.radius > pipe.position[1] and self.position[1] - self.radius < pipe.position[1] + pipe.height
 
             if collide_x and collide_y:
                 self.is_alive = False
 
             # check if past pipe and increment score
-            dist_past = (self.position[0] - self.size) - (pipe.position[0] + pipe.width)
+            dist_past = (self.position[0] - self.radius) - (pipe.position[0] + pipe.width)
             if dist_past > 0 and i // 2 != self.last_pipe:
                 self.score += 1
                 self.last_pipe = i // 2
@@ -74,7 +78,8 @@ class Player():
         self.last_input_time += delta_time
 
     def draw(self, surface) -> None:
-        pygame.draw.circle(surface, self.color, self.position, self.size)
+        # pygame.draw.circle(surface, self.color, self.position, self.radius)
+        surface.blit(self.img, (self.position[0]-self.radius, self.position[1]-self.radius))
 
     # ------------------------------------------------------------------------
     # functions for NEAT
